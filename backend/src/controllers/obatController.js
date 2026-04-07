@@ -10,7 +10,7 @@ exports.getAll = (req, res) => {
 exports.getById = (req, res) => {
   const id = req.params.id;
 
-  db.query('SELECT * FROM data_obat WHERE id = ?', [id], (err, result) => {
+  db.query('SELECT * FROM data_obat WHERE id_obat = ?', [id], (err, result) => {
     if (err) return res.status(500).json(err);
     res.json(result[0]);
   });
@@ -29,7 +29,7 @@ exports.update = (req, res) => {
   const id = req.params.id;
   const data = req.body;
 
-  db.query('UPDATE data_obat SET ? WHERE id=?', [data, id], (err) => {
+  db.query('UPDATE data_obat SET ? WHERE id_obat=?', [data, id], (err) => {
     if (err) return res.status(500).json(err);
     res.json({ message: 'Data Obat Berhasil Diupdate' });
   });
@@ -38,7 +38,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  db.query('DELETE FROM data_obat WHERE id=?', [id], (err) => {
+  db.query('DELETE FROM data_obat WHERE id_obat=?', [id], (err) => {
     if (err) return res.status(500).json(err);
     res.json({ message: 'Data Obat Berhasil Dihapus' });
   });
