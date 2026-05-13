@@ -14,7 +14,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-64 min-h-screen bg-gray-900 text-white p-5">
+    <div className="w-64 min-h-screen bg-gray-900 text-white p-5 fixed left-0 top-0 shadow-lg">
       <h1 className="text-2xl font-bold mb-8 text-center">
         Apriori System
       </h1>

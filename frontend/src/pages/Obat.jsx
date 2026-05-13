@@ -65,7 +65,7 @@ export default function Obat() {
     return (
     <div className="flex min-h-screen bg-gray-100">
         <Sidebar />
-            <div className="flex-1 p-6">
+            <div className="flex-1 ml-64 p-6 overflow-y-auto">
                 <h1 className="text-3xl font-bold mb-2">Data Obat</h1>
                     <p className="text-gray-600 mb-6">
                         Kelola data obat yang digunakan dalam proses analisis Apriori.
