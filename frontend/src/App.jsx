@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 import Sidebar from "./pages/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Pasien from "./pages/Pasien";
@@ -13,6 +15,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/pasien" element={<Pasien />} />
