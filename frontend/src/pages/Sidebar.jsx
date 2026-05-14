@@ -9,7 +9,7 @@ export default function Sidebar() {
     { name: "Data Pasien", path: "/pasien" },
     { name: "Data Obat", path: "/obat" },
     { name: "Data Transaksi", path: "/transaksi" },
-    { name: "Kelola Data", path: "/kelola_data" },
+    { name: "Kelola Data", path: "/apriori" },
     { name: "Manajemen User", path: "/user" },
   ];
 

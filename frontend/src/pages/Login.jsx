@@ -44,7 +44,7 @@ const Login = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>LOGIN SISTEM</h2>
+        <h1 style={styles.title}>Analisa Pola Penggunaan Obat Klinik Ibnu Sina</h1>
         <form onSubmit={handleLogin}>
           <div style={styles.inputGroup}>
             <label>Username</label>

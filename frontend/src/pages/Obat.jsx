@@ -75,15 +75,6 @@ export default function Obat() {
                     className="bg-white p-6 rounded-2xl shadow mb-6 grid md:grid-cols-4 gap-4"
                 >
                 <input
-                    type="text"
-                    name="nama_obat"
-                    placeholder="Nama Obat"
-                    value={form.nama_obat}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
-                <input
                     type="int"
                     name="kode_obat"
                     placeholder="Kode Obat"
@@ -92,6 +83,15 @@ export default function Obat() {
                     className="border p-2 rounded"
                     required
                 />
+                <input
+                    type="text"
+                    name="nama_obat"
+                    placeholder="Nama Obat"
+                    value={form.nama_obat}
+                    onChange={handleChange}
+                    className="border p-2 rounded"
+                    required
+                />                
                 <input
                     type="varchar"
                     name="jenis_obat"

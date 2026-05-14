@@ -42,7 +42,7 @@ const Register = () => {
     <div style={styles.container}>
       <div style={styles.card}>
 
-        <h2 style={styles.title}>REGISTER AKUN</h2>
+        <h2 style={styles.title}>Analisa Pola Penggunaan Obat Klinik Ibnu Sina</h2>
           <form onSubmit={handleRegister}>
             <div style={styles.inputGroup}>
               <label>Nama</label>
