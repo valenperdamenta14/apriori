@@ -10,11 +10,13 @@ const pasienRoutes = require('./src/routes/pasienRoutes');
 const obatRoutes = require('./src/routes/obatRoutes');
 const transaksiRoutes = require('./src/routes/transaksiRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const aprioriRoutes = require('./src/routes/aprioriRoutes');
 
 app.use('/api/pasien', pasienRoutes);
 app.use('/api/obat', obatRoutes);
 app.use('/api/transaksi', transaksiRoutes);
 app.use('/api/user', userRoutes);
+app.use("/api/apriori",aprioriRoutes);
 
 const PORT = 5000;
 

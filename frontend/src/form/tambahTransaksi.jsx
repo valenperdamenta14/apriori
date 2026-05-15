@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
 
-export default function TambahObat({
+export default function TambahTransaksi({
   onClose,
   onSave,
   editData,
 }) {
 
   const [form, setForm] = useState({
-    kode_obat: "",
+    tanggal: "",
+    nama_pasien: "",
     nama_obat: "",
-    jenis_obat: "",
+    diagnosa: "",
   });
 
-  // Isi form saat edit
   useEffect(() => {
 
     if (editData) {
       setForm({
-        kode_obat: editData.kode_obat,
+        tanggal: editData.tanggal,
+        nama_pasien: editData.nama_pasien,
         nama_obat: editData.nama_obat,
-        jenis_obat: editData.jenis_obat,
+        diagnosa: editData.diagnosa,
       });
     }
 
@@ -33,12 +34,14 @@ export default function TambahObat({
   };
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
 
     if (
-      !form.kode_obat ||
+      !form.tanggal ||
+      !form.nama_pasien ||
       !form.nama_obat ||
-      !form.jenis_obat
+      !form.diagnosa
     ) {
       alert("Semua field wajib diisi!");
       return;
@@ -53,7 +56,7 @@ export default function TambahObat({
       <div className="bg-white p-6 rounded-lg w-[500px] shadow-lg">
 
         <h3 className="text-xl font-semibold mb-4">
-          {editData ? "Edit Obat" : "Tambah Obat"}
+          {editData ? "Edit Transaksi" : "Tambah Transaksi"}
         </h3>
 
         <form onSubmit={handleSubmit}>
@@ -61,10 +64,18 @@ export default function TambahObat({
           <div className="grid grid-cols-1 gap-3">
 
             <input
+              type="date"
+              name="tanggal"
+              value={form.tanggal}
+              onChange={handleChange}
+              className="border p-2 rounded"
+            />
+
+            <input
               type="text"
-              name="kode_obat"
-              placeholder="Kode Obat"
-              value={form.kode_obat}
+              name="nama_pasien"
+              placeholder="Nama Pasien"
+              value={form.nama_pasien}
               onChange={handleChange}
               className="border p-2 rounded"
             />
@@ -80,9 +91,9 @@ export default function TambahObat({
 
             <input
               type="text"
-              name="jenis_obat"
-              placeholder="Jenis Obat"
-              value={form.jenis_obat}
+              name="diagnosa"
+              placeholder="Diagnosa"
+              value={form.diagnosa}
               onChange={handleChange}
               className="border p-2 rounded"
             />
@@ -107,6 +118,7 @@ export default function TambahObat({
             </button>
 
           </div>
+
         </form>
 
       </div>

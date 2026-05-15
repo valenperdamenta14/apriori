@@ -1,146 +1,158 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import TambahObat from "../form/tambahObat";
 
 const API_URL = "http://localhost:5000/api/obat";
 
 export default function Obat() {
     const [data, setData] = useState([]);
-    const [form, setForm] = useState({ kode_obat:"", nama_obat: "", jenis_obat: "" });
-    const [editId, setEditId] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const fetchData = async () => {
-        const res = await fetch(API_URL);
-        const result = await res.json();
-        setData(result);
+        try {
+            const res = await fetch(API_URL);
+            const result = await res.json();
+            setData(result);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
         fetchData();
     }, []);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const handleSave = async (form) => {
+        try {
+            if (editData) {
+                await fetch(`${API_URL}/${editData.id_obat}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(form),
+                });
+            } else {
+                await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(form),
+                });
+            }
+            fetchData();
+            setShowModal(false);
+            setEditData(null);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (editId) {
-            await fetch(`${API_URL}/${editId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
-            });
-        } else {
-            await fetch(API_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
-            });
+        } catch (error) {
+            console.error(error);
         }
-
-        setForm({ kode_obat:"", nama_obat: "", jenis_obat: "" });
-        setEditId(null);
-        fetchData();
     };
 
     const handleEdit = (item) => {
-        setForm({
-            kode_obat: item.kode_obat,
-            nama_obat: item.nama_obat,
-            jenis_obat: item.jenis_obat,
-        });
-        setEditId(item.id_obat);
+        setEditData(item);
+        setShowModal(true);
     };
 
     const handleDelete = async (id) => {
-        if (confirm("Yakin ingin menghapus data?")) {
+        try {
+            const confirmDelete = window.confirm(
+                "Yakin ingin menghapus data?"
+            );
+            if (!confirmDelete) return;
             await fetch(`${API_URL}/${id}`, {
                 method: "DELETE",
             });
-        fetchData();
+            fetchData();
+        } catch (error) {
+            console.error(error);
         }
     };
 
     return (
-    <div className="flex min-h-screen bg-gray-100">
-        <Sidebar />
-            <div className="flex-1 ml-64 p-6 overflow-y-auto">
-                <h1 className="text-3xl font-bold mb-2">Data Obat</h1>
-                    <p className="text-gray-600 mb-6">
-                        Kelola data obat yang digunakan dalam proses analisis Apriori.
-                    </p>
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white p-6 rounded-2xl shadow mb-6 grid md:grid-cols-4 gap-4"
-                >
-                <input
-                    type="int"
-                    name="kode_obat"
-                    placeholder="Kode Obat"
-                    value={form.kode_obat}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
-                <input
-                    type="text"
-                    name="nama_obat"
-                    placeholder="Nama Obat"
-                    value={form.nama_obat}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />                
-                <input
-                    type="varchar"
-                    name="jenis_obat"
-                    placeholder="Jenis Obat"
-                    value={form.jenis_obat}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
-                <button className="bg-blue-600 text-white rounded px-4">
-                    {editId ? "Update" : "Tambah"}
-                </button>
-                </form>
-                <div className="bg-white shadow rounded-2xl overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-gray-200">
-                        <tr>
-                            <th className="p-3">No</th>
-                            <th className="p-3">Kode Obat</th>
-                            <th className="p-3">Nama Obat</th>
-                            <th className="p-3">Jenis</th>
-                            <th className="p-3">Aksi</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((item, index) => (
-                                <tr key={item.id_obat} className="border-b hover:bg-gray-50">
-                                    <td className="p-3">{index + 1}</td>
-                                    <td className="p-3">{item.kode_obat}</td>
-                                    <td className="p-3">{item.nama_obat}</td>
-                                    <td className="p-3">{item.jenis_obat}</td>
-                                    <td className="p-3 space-x-2">
-                                        <button
-                                            onClick={() => handleEdit(item)}
-                                            className="bg-yellow-400 px-3 py-1 rounded-lg hover:bg-yellow-500"
-                                        >
-                                        Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(item.id_obat)}
-                                            className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
-                                        >
-                                            Hapus
-                                        </button>
-                                    </td>
+        <div className="flex min-h-screen bg-gray-100">
+            <Sidebar />
+            <div className="flex-1 ml-64 p-6 h-screen flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold mb-2">
+                            Data Obat
+                        </h1>
+
+                        <p className="text-gray-600">
+                            Kelola data obat yang digunakan dalam proses analisis Apriori.
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            setEditData(null);
+                            setShowModal(true);
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                    >
+                        Tambah
+                    </button>
+                </div>
+
+                {showModal && (
+                    <TambahObat
+                        onClose={() => {
+                            setShowModal(false);
+                            setEditData(null);
+                        }}
+                        onSave={handleSave}
+                        editData={editData}
+                    />
+                )}
+
+                <div className="flex-1">
+                    <div className="max-h-[730px] overflow-y-auto bg-white shadow rounded-2xl">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="sticky top-0 z-10 bg-gray-200">
+                                <tr>
+                                    <th className="p-3">No</th>
+                                    <th className="p-3">Kode Obat</th>
+                                    <th className="p-3">Nama Obat</th>
+                                    <th className="p-3">Jenis Obat</th>
+                                    <th className="p-3">Aksi</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody>
+                                {data.map((item, index) => (
+                                    <tr
+                                        key={item.id_obat}
+                                        className="border-b hover:bg-gray-50"
+                                    >
+                                        <td className="p-3">{index + 1}</td>
+                                        <td className="p-3">{item.kode_obat}</td>
+                                        <td className="p-3">{item.nama_obat}</td>
+                                        <td className="p-3">{item.jenis_obat}</td>
+                                        <td className="p-3 space-x-2">
+                                            <button
+                                                onClick={() => handleEdit(item)}
+                                                className="bg-yellow-400 text-white px-3 py-1 rounded-lg hover:bg-yellow-500"
+                                            >
+                                                Edit
+                                            </button>
+
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(item.id_obat)
+                                                }
+                                                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
