@@ -25,31 +25,43 @@ export default function Obat() {
 
     const handleSave = async (form) => {
         try {
+            let response;
+
             if (editData) {
-                await fetch(`${API_URL}/${editData.id_obat}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(form),
-                });
+            response = await fetch(
+                `${API_URL}/${editData.id_obat}`,
+                {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+                }
+            );
             } else {
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(form),
-                });
+            response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+            });
             }
-            fetchData();
+
+            if (!response.ok) {
+            throw new Error("Gagal menyimpan data");
+            }
+
+            await fetchData();
+
             setShowModal(false);
             setEditData(null);
 
         } catch (error) {
             console.error(error);
+            alert("Gagal menyimpan data");
         }
-    };
+        };
 
     const handleEdit = (item) => {
         setEditData(item);

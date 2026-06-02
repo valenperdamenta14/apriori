@@ -5,24 +5,23 @@ export default function TambahObat({
   onSave,
   editData,
 }) {
-
   const [form, setForm] = useState({
-    kode_obat: "",
     nama_obat: "",
     jenis_obat: "",
   });
 
-  // Isi form saat edit
   useEffect(() => {
-
     if (editData) {
       setForm({
-        kode_obat: editData.kode_obat,
-        nama_obat: editData.nama_obat,
-        jenis_obat: editData.jenis_obat,
+        nama_obat: editData.nama_obat || "",
+        jenis_obat: editData.jenis_obat || "",
+      });
+    } else {
+      setForm({
+        nama_obat: "",
+        jenis_obat: "",
       });
     }
-
   }, [editData]);
 
   const handleChange = (e) => {
@@ -35,11 +34,7 @@ export default function TambahObat({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (
-      !form.kode_obat ||
-      !form.nama_obat ||
-      !form.jenis_obat
-    ) {
+    if (!form.nama_obat || !form.jenis_obat) {
       alert("Semua field wajib diisi!");
       return;
     }
@@ -49,26 +44,17 @@ export default function TambahObat({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-
       <div className="bg-white p-6 rounded-lg w-[500px] shadow-lg">
-
         <h3 className="text-xl font-semibold mb-4">
           {editData ? "Edit Obat" : "Tambah Obat"}
         </h3>
 
         <form onSubmit={handleSubmit}>
-
           <div className="grid grid-cols-1 gap-3">
-
             <input
               type="text"
               name="kode_obat"
-              placeholder="Kode Obat"
-              value={form.kode_obat}
-              onChange={handleChange}
-              className="border p-2 rounded"
             />
-
             <input
               type="text"
               name="nama_obat"
@@ -86,11 +72,9 @@ export default function TambahObat({
               onChange={handleChange}
               className="border p-2 rounded"
             />
-
           </div>
 
           <div className="flex justify-end gap-3 mt-4">
-
             <button
               type="button"
               onClick={onClose}
@@ -105,10 +89,8 @@ export default function TambahObat({
             >
               {editData ? "Update" : "Tambah"}
             </button>
-
           </div>
         </form>
-
       </div>
     </div>
   );

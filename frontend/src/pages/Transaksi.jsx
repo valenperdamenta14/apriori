@@ -147,7 +147,7 @@ export default function Transaksi() {
                                 <tr>
                                     <th className="p-3">No</th>
                                     <th className="p-3">Tanggal</th>
-                                    <th className="p-3">Nama Pasien</th>
+                                    <th className="p-3">Kode Pasien</th>
                                     <th className="p-3">Nama Obat</th>
                                     <th className="p-3">Diagnosa</th>
                                     <th className="p-3">Aksi</th>
@@ -171,7 +171,7 @@ export default function Transaksi() {
                                         </td>
 
                                         <td className="p-3">
-                                            {item.nama_pasien}
+                                            {item.kode_pasien}
                                         </td>
 
                                         <td className="p-3">

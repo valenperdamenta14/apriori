@@ -25,30 +25,41 @@ export default function Pasien() {
 
     const handleSave = async (form) => {
         try {
+            let response;
+
             if (editData) {
-                await fetch(`${API_URL}/${editData.id_pasien}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(form),
-                });
+            response = await fetch(
+                `${API_URL}/${editData.id_pasien}`,
+                {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+                }
+            );
             } else {
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(form),
-                });
+            response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+            });
             }
 
-            fetchData();
+            if (!response.ok) {
+            throw new Error("Gagal menyimpan data");
+            }
+
+            await fetchData();
+
             setShowModal(false);
             setEditData(null);
 
         } catch (error) {
             console.error(error);
+            alert("Gagal menyimpan data");
         }
     };
 
@@ -114,6 +125,7 @@ export default function Pasien() {
                             <thead className="sticky top-0 z-10 bg-gray-200">
                                 <tr>
                                     <th className="p-3">No</th>
+                                    <th className="p-3">Kode Pasien</th>
                                     <th className="p-3">Nama</th>
                                     <th className="p-3">Aksi</th>
                                 </tr>
@@ -126,6 +138,7 @@ export default function Pasien() {
                                         className="border-b hover:bg-gray-50"
                                     >
                                         <td className="p-3">{index + 1}</td>
+                                        <td className="p-3">{item.kode_pasien}</td>
                                         <td className="p-3">{item.nama_pasien}</td>
                                         <td className="p-3 space-x-2">
                                             <button

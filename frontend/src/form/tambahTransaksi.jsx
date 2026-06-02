@@ -8,7 +8,7 @@ export default function TambahTransaksi({
 
   const [form, setForm] = useState({
     tanggal: "",
-    nama_pasien: "",
+    kode_pasien: "",
     nama_obat: "",
     diagnosa: "",
   });
@@ -18,7 +18,7 @@ export default function TambahTransaksi({
     if (editData) {
       setForm({
         tanggal: editData.tanggal,
-        nama_pasien: editData.nama_pasien,
+        kode_pasien: editData.kode_pasien,
         nama_obat: editData.nama_obat,
         diagnosa: editData.diagnosa,
       });
@@ -39,7 +39,7 @@ export default function TambahTransaksi({
 
     if (
       !form.tanggal ||
-      !form.nama_pasien ||
+      !form.kode_pasien ||
       !form.nama_obat ||
       !form.diagnosa
     ) {
@@ -73,9 +73,9 @@ export default function TambahTransaksi({
 
             <input
               type="text"
-              name="nama_pasien"
-              placeholder="Nama Pasien"
-              value={form.nama_pasien}
+              name="kode_pasien"
+              placeholder="Kode Pasien"
+              value={form.kode_pasien}
               onChange={handleChange}
               className="border p-2 rounded"
             />
