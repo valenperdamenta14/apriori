@@ -30,7 +30,7 @@ const Login = () => {
       );
 
       alert(response.data.message);
-      window.location.href = "/sidebar";
+      window.location.href = "/dashboard";
 
     } catch (error) {
       if (error.response) {

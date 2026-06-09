@@ -31,10 +31,12 @@ exports.prosesApriori = (req, res) => {
                 const totalTransaksi = rows.length;
                 const transaksi = rows.map((item) => {
                     return item.nama_obat
-                        .split("|")
-                        .map((i) => i.trim());
-
+                        .split(",")
+                        .map((i) => i.trim())
+                        .filter(Boolean);
                 });
+                console.log("Total transaksi:", totalTransaksi);
+                console.log("Data transaksi:", transaksi);
                 const itemCount1 = {};
                 transaksi.forEach((items) => {
                     items.forEach((item) => {

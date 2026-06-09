@@ -11,22 +11,25 @@ export default function Apriori() {
         itemset2: [],
         itemset3: [],
     });
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    const [sudahDiproses, setSudahDiproses] = useState(false);
     const fetchApriori = async () => {
+        setProcessing(true);
+
         try {
             const res = await fetch(API_URL);
             const result = await res.json();
+
             setData(result);
+            setSudahDiproses(true);
         } catch (error) {
-            console.error("Gagal mengambil data:", error);
+            console.error(error);
+            alert("Gagal memproses Apriori");
         } finally {
-            setLoading(false);
+            setProcessing(false);
         }
     };
-
-    useEffect(() => {
-        fetchApriori();
-    }, []);
 
     if (loading) {
         return (
@@ -96,133 +99,157 @@ export default function Apriori() {
                     </div>
                 </div>
 
-                <div className="bg-white shadow rounded-2xl p-5 mb-6">
-                    <h2 className="text-2xl font-bold mb-4">
-                        Itemset 1
-                    </h2>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-gray-200">
-                                <tr>
-                                    <th className="p-3">No</th>
-                                    <th className="p-3">Item</th>
-                                    <th className="p-3">Frekuensi</th>
-                                    <th className="p-3">Support (%)</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {data.itemset1.map((item, index) => (
-                                    <tr
-                                        key={index}
-                                        className="border-b hover:bg-gray-50"
-                                    >
-                                        <td className="p-3">{index + 1}</td>
-                                        <td className="p-3">{item.item}</td>
-                                        <td className="p-3">{item.frekuensi}</td>
-                                        <td className="p-3">{item.support}%</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="mt-4">
+                    <button
+                        onClick={fetchApriori}
+                        disabled={processing}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                    >
+                        {processing
+                            ? "Memproses..."
+                            : "Proses Apriori"}
+                    </button>
                 </div>
 
-                <div className="bg-white shadow rounded-2xl p-5 mb-6">
-                    <h2 className="text-2xl font-bold mb-4">
-                        Itemset 2
-                    </h2>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-gray-200">
-                                <tr>
-                                    <th className="p-3">No</th>
-                                    <th className="p-3">Kombinasi Item</th>
-                                    <th className="p-3">Frekuensi</th>
-                                    <th className="p-3">Support (%)</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {data.itemset2.map((item, index) => (
-                                    <tr
-                                        key={index}
-                                        className="border-b hover:bg-gray-50"
-                                    >
-                                        <td className="p-3">
-                                            {index + 1}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.item}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.frekuensi}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.support}%
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-
-                        </table>
+                {!sudahDiproses ? (
+                    <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 p-4 rounded-lg mt-6">
+                        Klik tombol <b>Proses Apriori</b> untuk menjalankan perhitungan.
                     </div>
+                ) : (
+                    <>
+                        <div className="bg-white shadow rounded-2xl p-5 mb-6">
+                            <h2 className="text-2xl font-bold mb-4">
+                                Itemset 1
+                            </h2>
 
-                </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="bg-gray-200">
+                                        <tr>
+                                            <th className="p-3">No</th>
+                                            <th className="p-3">Item</th>
+                                            <th className="p-3">Frekuensi</th>
+                                            <th className="p-3">Support (%)</th>
+                                        </tr>
+                                    </thead>
 
-                {/* ITEMSET 3 */}
-                <div className="bg-white shadow rounded-2xl p-5 mb-6">
+                                    <tbody>
+                                        {data.itemset1.map((item, index) => (
+                                            <tr
+                                                key={index}
+                                                className="border-b hover:bg-gray-50"
+                                            >
+                                                <td className="p-3">{index + 1}</td>
+                                                <td className="p-3">{item.item}</td>
+                                                <td className="p-3">{item.frekuensi}</td>
+                                                <td className="p-3">{item.support}%</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                    <h2 className="text-2xl font-bold mb-4">
-                        Itemset 3
-                    </h2>
+                        <div className="bg-white shadow rounded-2xl p-5 mb-6">
+                            <h2 className="text-2xl font-bold mb-4">
+                                Itemset 2
+                            </h2>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="bg-gray-200">
+                                        <tr>
+                                            <th className="p-3">No</th>
+                                            <th className="p-3">Kombinasi Item</th>
+                                            <th className="p-3">Frekuensi</th>
+                                            <th className="p-3">Support (%)</th>
+                                        </tr>
+                                    </thead>
 
-                            <thead className="bg-gray-200">
-                                <tr>
-                                    <th className="p-3">No</th>
-                                    <th className="p-3">Kombinasi Item</th>
-                                    <th className="p-3">Frekuensi</th>
-                                    <th className="p-3">Support (%)</th>
-                                </tr>
-                            </thead>
+                                    <tbody>
+                                        {data.itemset2.map((item, index) => (
+                                            <tr
+                                                key={index}
+                                                className="border-b hover:bg-gray-50"
+                                            >
+                                                <td className="p-3">
+                                                    {index + 1}
+                                                </td>
 
-                            <tbody>
-                                {data.itemset3.map((item, index) => (
-                                    <tr
-                                        key={index}
-                                        className="border-b hover:bg-gray-50"
-                                    >
-                                        <td className="p-3">
-                                            {index + 1}
-                                        </td>
+                                                <td className="p-3">
+                                                    {item.item}
+                                                </td>
 
-                                        <td className="p-3">
-                                            {item.item}
-                                        </td>
+                                                <td className="p-3">
+                                                    {item.frekuensi}
+                                                </td>
 
-                                        <td className="p-3">
-                                            {item.frekuensi}
-                                        </td>
+                                                <td className="p-3">
+                                                    {item.support}%
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
 
-                                        <td className="p-3">
-                                            {item.support}%
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
+                                </table>
+                            </div>
 
-                        </table>
-                    </div>
+                        </div>
 
-                </div>
+                        {/* ITEMSET 3 */}
+                        <div className="bg-white shadow rounded-2xl p-5 mb-6">
+
+                            <h2 className="text-2xl font-bold mb-4">
+                                Itemset 3
+                            </h2>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+
+                                    <thead className="bg-gray-200">
+                                        <tr>
+                                            <th className="p-3">No</th>
+                                            <th className="p-3">Kombinasi Item</th>
+                                            <th className="p-3">Frekuensi</th>
+                                            <th className="p-3">Support (%)</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {data.itemset3.map((item, index) => (
+                                            <tr
+                                                key={index}
+                                                className="border-b hover:bg-gray-50"
+                                            >
+                                                <td className="p-3">
+                                                    {index + 1}
+                                                </td>
+
+                                                <td className="p-3">
+                                                    {item.item}
+                                                </td>
+
+                                                <td className="p-3">
+                                                    {item.frekuensi}
+                                                </td>
+
+                                                <td className="p-3">
+                                                    {item.support}%
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </div>
+                    </>
+                )}
+
+                
+
+                
 
             </div>
         </div>
