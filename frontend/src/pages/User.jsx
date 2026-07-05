@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import { motion } from "framer-motion";
 
 const API_URL = "http://localhost:5000/api/user";
 
@@ -128,33 +129,40 @@ export default function User() {
     <div className="flex min-h-screen bg-slate-100">
       <Sidebar />
 
-      <div className="flex-1 ml-[270px] p-6">
+      <div className="flex-1 ml-64 p-8 h-screen flex flex-col">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8"
+        >
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-4xl font-bold text-slate-800">
               Manajemen User
             </h1>
 
-            <p className="text-slate-500 mt-1">
-              Kelola akun pengguna yang
-              dapat mengakses sistem.
+            <p className="text-slate-500 mt-2">
+              Kelola akun pengguna yang dapat mengakses sistem.
             </p>
           </div>
 
           <button
             onClick={handleTambah}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-medium transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             + Tambah User
           </button>
-        </div>
+        </motion.div>
 
         {/* Table */}
-        <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
-          <div className="overflow-x-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex-1 bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"
+        >
+          <div className="h-full overflow-y-auto overflow-x-auto">
             <table className="w-full">
-              <thead>
+              <thead className="sticky top-0 z-10 bg-slate-100">
                 <tr className="bg-slate-50 border-b">
                   <th className="px-4 py-4 text-left text-sm">
                     No
@@ -183,7 +191,7 @@ export default function User() {
                   (item, index) => (
                     <tr
                       key={item.id_user}
-                      className="border-b hover:bg-slate-50"
+                      className="border-t hover:bg-slate-50 transition"
                     >
                       <td className="px-4 py-4">
                         {index + 1}
@@ -194,7 +202,13 @@ export default function User() {
                       </td>
 
                       <td className="px-4 py-4">
-                        <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-semibold">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            item.status === "admin"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-green-100 text-green-700"
+                          }`}
+                        >
                           {item.status}
                         </span>
                       </td>
@@ -211,7 +225,7 @@ export default function User() {
                                 item
                               )
                             }
-                            className="bg-amber-400 hover:bg-amber-500 px-3 py-2 rounded-lg text-sm font-medium"
+                            className="bg-amber-400 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition"
                           >
                             Edit
                           </button>
@@ -222,7 +236,7 @@ export default function User() {
                                 item.id_user
                               )
                             }
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium"
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
                           >
                             Hapus
                           </button>
@@ -245,12 +259,12 @@ export default function User() {
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
 
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white w-full max-w-lg rounded-3xl p-6 shadow-xl">
+            <div className="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl border border-slate-200">
               <h2 className="text-xl font-semibold mb-5">
                 {editId !== null
                   ? "Edit User"
@@ -267,7 +281,7 @@ export default function User() {
                   placeholder="Nama"
                   value={form.nama}
                   onChange={handleChange}
-                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   required
                 />
 
@@ -275,7 +289,7 @@ export default function User() {
                   name="status"
                   value={form.status}
                   onChange={handleChange}
-                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   required
                 >
                   <option value="">
@@ -297,7 +311,7 @@ export default function User() {
                   placeholder="Username"
                   value={form.username}
                   onChange={handleChange}
-                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   required
                 />
 
@@ -311,7 +325,7 @@ export default function User() {
                   }
                   value={form.password}
                   onChange={handleChange}
-                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   required={!editId}
                 />
 

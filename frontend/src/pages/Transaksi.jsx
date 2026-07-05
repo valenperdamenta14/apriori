@@ -1,218 +1,250 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Sidebar from "./Sidebar";
 import TambahTransaksi from "../form/tambahTransaksi";
 
 const API_URL = "http://localhost:5000/api/transaksi";
 
 export default function Transaksi() {
+  const [data, setData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [editData, setEditData] = useState(null);
 
-    const [data, setData] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [editData, setEditData] = useState(null);
+  const fetchData = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const result = await res.json();
+      setData(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    const fetchData = async () => {
-        try {
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-            const res = await fetch(API_URL);
-            const result = await res.json();
+  const handleSave = async (form) => {
+    try {
+      if (editData) {
+        await fetch(`${API_URL}/${editData.id_transaksi}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        });
+      } else {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        });
+      }
 
-            setData(result);
+      fetchData();
+      setShowModal(false);
+      setEditData(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-        } catch (error) {
-            console.error(error);
-        }
-    };
+  const handleEdit = (item) => {
+    setEditData(item);
+    setShowModal(true);
+  };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+  const handleDelete = async (id) => {
+    try {
+      const confirmDelete = window.confirm(
+        "Yakin ingin menghapus data?"
+      );
 
-    // Tambah / Update
-    const handleSave = async (form) => {
+      if (!confirmDelete) return;
 
-        try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
 
-            if (editData) {
+      fetchData();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-                // UPDATE
-                await fetch(`${API_URL}/${editData.id_transaksi}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(form),
-                });
+  return (
+    <div className="flex min-h-screen bg-slate-100">
+      <Sidebar />
 
-            } else {
+      <div className="flex-1 ml-64 p-8 h-screen flex flex-col">
 
-                // INSERT
-                await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(form),
-                });
-            }
+        {/* Header */}
 
-            fetchData();
-            setShowModal(false);
-            setEditData(null);
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8"
+        >
+          <div>
+            <h1 className="text-4xl font-bold text-slate-800">
+              Data Transaksi
+            </h1>
 
-        } catch (error) {
-            console.error(error);
-        }
-    };
+            <p className="text-slate-500 mt-2">
+              Data transaksi digunakan sebagai dasar analisis Apriori.
+            </p>
+          </div>
 
-    // EDIT
-    const handleEdit = (item) => {
-        setEditData(item);
-        setShowModal(true);
-    };
+          <button
+            onClick={() => {
+              setEditData(null);
+              setShowModal(true);
+            }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            + Tambah Transaksi
+          </button>
+        </motion.div>
 
-    // DELETE
-    const handleDelete = async (id) => {
+        {/* Modal */}
 
-        try {
+        {showModal && (
+          <TambahTransaksi
+            onClose={() => {
+              setShowModal(false);
+              setEditData(null);
+            }}
+            onSave={handleSave}
+            editData={editData}
+          />
+        )}
 
-            const confirmDelete = window.confirm(
-                "Yakin ingin menghapus data?"
-            );
+        {/* Table */}
 
-            if (!confirmDelete) return;
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex-1 bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"
+        >
+          <div className="h-full overflow-y-auto overflow-x-auto">
 
-            await fetch(`${API_URL}/${id}`, {
-                method: "DELETE",
-            });
+            <table className="w-full border-collapse">
 
-            fetchData();
+              <thead className="sticky top-0 z-10 bg-slate-100">
 
-        } catch (error) {
-            console.error(error);
-        }
-    };
+                <tr className="text-slate-700">
 
-    return (
-        <div className="flex min-h-screen bg-gray-100">
+                  <th className="px-6 py-4 text-left font-semibold w-20">
+                    No
+                  </th>
 
-            <Sidebar />
+                  <th className="px-6 py-4 text-left font-semibold w-52">
+                    Tanggal
+                  </th>
 
-            <div className="flex-1 ml-64 p-6 h-screen flex flex-col">
+                  <th className="px-6 py-4 text-left font-semibold w-40">
+                    Kode Pasien
+                  </th>
 
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6">
+                  <th className="px-6 py-4 text-left font-semibold">
+                    Nama Obat
+                  </th>
 
-                    <div>
-                        <h1 className="text-3xl font-bold mb-2">
-                            Data Transaksi
-                        </h1>
+                  <th className="px-6 py-4 text-left font-semibold w-60">
+                    Diagnosa
+                  </th>
 
-                        <p className="text-gray-600">
-                            Data transaksi digunakan sebagai dasar analisis Apriori.
-                        </p>
-                    </div>
+                  <th className="px-6 py-4 text-center font-semibold w-48">
+                    Aksi
+                  </th>
 
-                    {/* Button Tambah */}
-                    <button
-                        onClick={() => {
-                            setEditData(null);
-                            setShowModal(true);
-                        }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {data.length > 0 ? (
+                  data.map((item, index) => (
+                    <tr
+                      key={item.id_transaksi}
+                      className="border-t hover:bg-slate-50 transition"
                     >
-                        Tambah
-                    </button>
 
-                </div>
+                      <td className="px-6 py-4">
+                        {index + 1}
+                      </td>
 
-                {/* Modal */}
-                {showModal && (
-                    <TambahTransaksi
-                        onClose={() => {
-                            setShowModal(false);
-                            setEditData(null);
-                        }}
-                        onSave={handleSave}
-                        editData={editData}
-                    />
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {new Date(item.tanggal).toLocaleDateString("id-ID", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </td>
+
+                      <td className="px-6 py-4 font-medium text-blue-600">
+                        {item.kode_pasien}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-pre-line">
+                        {item.nama_obat}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {item.diagnosa}
+                      </td>
+
+                      <td className="px-6 py-4">
+
+                        <div className="flex justify-center gap-3">
+
+                          <button
+                            onClick={() => handleEdit(item)}
+                            className="bg-amber-400 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition"
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              handleDelete(item.id_transaksi)
+                            }
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+                          >
+                            Hapus
+                          </button>
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+
+                    <td
+                      colSpan="6"
+                      className="text-center py-12 text-gray-400"
+                    >
+                      Belum ada data transaksi.
+                    </td>
+
+                  </tr>
                 )}
 
-                {/* Table */}
-                <div className="flex-1">
-                    <div className="max-h-[730px] overflow-y-auto bg-white shadow rounded-2xl">
+              </tbody>
 
-                        <table className="w-full text-left border-collapse">
+            </table>
 
-                            <thead className="sticky top-0 z-10 bg-gray-200">
-                                <tr>
-                                    <th className="p-3">No</th>
-                                    <th className="p-3">Tanggal</th>
-                                    <th className="p-3">Kode Pasien</th>
-                                    <th className="p-3">Nama Obat</th>
-                                    <th className="p-3">Diagnosa</th>
-                                    <th className="p-3">Aksi</th>
-                                </tr>
-                            </thead>
+          </div>
+        </motion.div>
 
-                            <tbody>
-
-                                {data.map((item, index) => (
-                                    <tr
-                                        key={item.id_transaksi}
-                                        className="border-b hover:bg-gray-50"
-                                    >
-
-                                        <td className="p-3">
-                                            {index + 1}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.tanggal}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.kode_pasien}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.nama_obat}
-                                        </td>
-
-                                        <td className="p-3">
-                                            {item.diagnosa}
-                                        </td>
-
-                                        <td className="p-3 space-x-2">
-
-                                            <button
-                                                onClick={() => handleEdit(item)}
-                                                className="bg-yellow-400 px-3 py-1 rounded-lg hover:bg-yellow-500"
-                                            >
-                                                Edit
-                                            </button>
-
-                                            <button
-                                                onClick={() =>
-                                                    handleDelete(item.id_transaksi)
-                                                }
-                                                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
-                                            >
-                                                Hapus
-                                            </button>
-
-                                        </td>
-
-                                    </tr>
-                                ))}
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    );
+      </div>
+    </div>
+  );
 }

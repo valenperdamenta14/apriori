@@ -1,18 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 
-const Login = () => {
+export default function Login() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
   const [message, setMessage] = useState("");
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
+
+    setMessage("");
   };
 
   const handleLogin = async (e) => {
@@ -31,7 +35,6 @@ const Login = () => {
 
       alert(response.data.message);
       window.location.href = "/dashboard";
-
     } catch (error) {
       if (error.response) {
         setMessage(error.response.data.message);
@@ -42,122 +45,94 @@ const Login = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Analisa Pola Penggunaan Obat Klinik Ibnu Sina</h1>
-        <form onSubmit={handleLogin}>
-          <div style={styles.inputGroup}>
-            <label>Username</label>
-            <input
-              type="text"
-              name="username"
-              placeholder="Masukkan username"
-              value={formData.username}
-              onChange={handleChange}
-              style={styles.input}
-              required
-            />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-100 flex items-center justify-center px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md"
+      >
+
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 mx-auto rounded-full bg-blue-100 flex items-center justify-center text-4xl mb-4">
+              💊
+            </div>
+
+            <h1 className="text-2xl font-bold text-gray-800">
+              Login
+            </h1>
+
+            <p className="text-gray-500 mt-2">
+              Sistem Analisis Pola Penggunaan Obat
+            </p>
+
+            <p className="text-sm text-blue-600 font-medium">
+              Klinik Ibnu Sina
+            </p>
+
           </div>
 
-          <div style={styles.inputGroup}>
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Masukkan password"
-              value={formData.password}
-              onChange={handleChange}
-              style={styles.input}
-              required
-            />
-          </div>
+          <form
+            onSubmit={handleLogin}
+            className="space-y-5"
+          >
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">
+                Username
+              </label>
 
-          <div style={styles.registerContainer}>
-            <span>Belum punya akun? </span>
-            <a href="/register" style={styles.registerLink}>
-              Register
-            </a>
-          </div>
+              <input
+                type="text"
+                name="username"
+                placeholder="Masukkan username"
+                value={formData.username}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                required
+              />
+            </div>
 
-          <button type="submit" style={styles.button}>
-            Login
-          </button>
-        </form>
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">
+                Password
+              </label>
 
-        {message && (
-          <p style={styles.message}>
-            {message}
-          </p>
-        )}
-      </div>
+              <input
+                type="password"
+                name="password"
+                placeholder="Masukkan password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                required
+              />
+            </div>
+
+            <div className="text-right">
+              <a
+                href="/register"
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+              >
+                Belum punya akun?
+              </a>
+            </div>
+
+            {message && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-red-600 text-sm text-center">
+                {message}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+            >
+              Login
+            </button>
+          </form>
+        </div>
+      </motion.div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    backgroundColor: "#f4f4f4",
-  },
-
-  card: {
-    width: "350px",
-    backgroundColor: "#ffffff",
-    padding: "30px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-  },
-
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-  },
-
-  inputGroup: {
-    display: "flex",
-    flexDirection: "column",
-    marginBottom: "15px",
-  },
-
-  input: {
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    marginTop: "5px",
-    fontSize: "14px",
-  },
-
-  registerContainer: {
-    textAlign: "right",
-    marginBottom: "15px",
-    fontSize: "14px",
-  },
-
-  registerLink: {
-    color: "#007bff",
-    textDecoration: "none",
-    fontWeight: "bold",
-  },
-
-  button: {
-    width: "100%",
-    padding: "10px",
-    border: "none",
-    borderRadius: "5px",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    fontSize: "16px",
-    cursor: "pointer",
-  },
-
-  message: {
-    marginTop: "15px",
-    textAlign: "center",
-    color: "red",
-  },
-};
-
-export default Login;
+}
